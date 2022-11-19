@@ -40,8 +40,9 @@ INSTALLED_APPS = [
     
     #Add djangorestframework
     'rest_framework',
-    #Models
-    'tasks',
+    #Applications
+    'authentication',
+    'tasks'
 ]
 
 MIDDLEWARE = [
@@ -126,3 +127,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+#CustomUser Model
+AUTH_USER_MODEL = "authentication.CustomUser"
