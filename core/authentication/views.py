@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate
 from rest_framework import generics, status
 from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from .models import CustomUser
 
 from .serializers import UserSerializer, RegisterSerializer
 from .messages.responses_ok import LOGIN_OK, SIGNUP_OK
@@ -42,3 +44,41 @@ class SignUpView(generics.GenericAPIView):
                 "message": SIGNUP_OK
             },
         )
+
+
+@api_view(['GET'])
+def getUsers(request):
+    users = CustomUser.objects.all()
+    serializer = UserSerializer(users, many=True)
+    return Response(serializer.data)
+
+# @api_view(['POST'])
+# def createUser(request):
+#     data = request.data
+#     priority = Priority.objects.get(pk=data['priority'])
+#     task = Task.objects.create(
+#         title = data['title'],
+#         description = data['description'],
+#         is_completed = data['is_completed'],
+#         priority = priority
+#     )
+#     serializer = TaskSerializer(task, many=False)
+#     return Response(serializer.data)
+
+@api_view(['PUT'])
+def updateUser(request, pk):
+    data = request.data
+    user = CustomUser.objects.get(id=pk)
+    serializer = UserSerializer(instance=user, data=data)
+    if serializer.is_valid():
+        serializer.save()
+    return Response(serializer.data)
+
+@api_view(['DELETE'])
+def deleteUser(request, pk):
+    user = CustomUser.objects.get(id=pk)
+    user.delete()
+    data = {
+        "message": "User has been deleted succesfully"
+    }
+    return Response(data)
